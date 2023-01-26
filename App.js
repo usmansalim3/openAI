@@ -11,7 +11,7 @@ import ImageAISlice from './redux/ImageAISlice';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Chat from './Screens/AppScreens/Chat';
 import CustomDrawer from './CustomDrawer' ;
-import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import ImagePick from './Screens/AuthScreens/ImagePick';
 import SavedImagesSlice from './redux/SavedImagesSlice';
 
@@ -28,8 +28,6 @@ function DrawerScreens(){
         backgroundColor:'#282c34'
       },
       drawerInactiveTintColor:'#AAACB7'
-
-
     }}>
       <Drawer.Screen component={Home} name={'Image Generator'} options={{
         drawerIcon:({color})=><FontAwesome name="photo" size={24} color={color} />,
@@ -39,7 +37,9 @@ function DrawerScreens(){
         headerTitle:'',
         drawerIcon:({color})=><FontAwesome5 name="robot" size={24} color={color} />
       }} />
-      <Drawer.Screen component={ImagePick} name="pick image"/>
+      <Drawer.Screen component={ImagePick} name="Liked Images" options={{
+        drawerIcon:()=><AntDesign name="like1" size={22} color="#0088cc" />
+      }}/>
     </Drawer.Navigator>
   )
 }
