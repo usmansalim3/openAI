@@ -3,10 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react'
 import KeyboardShift from '@fullstackcraft/react-native-keyboard-shift/lib/components/KeyboardShift'
 import { TextInput } from 'react-native-paper'
 import axios from 'axios'
-import { Bubble, GiftedChat, Send } from 'react-native-gifted-chat'
+import { Bubble, GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat'
 import { nanoid } from '@reduxjs/toolkit'
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
-import { responsiveHeight } from 'react-native-responsive-dimensions'
+import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { useSelector } from 'react-redux'
 
 
@@ -18,7 +18,7 @@ const Chat = () => {
   const {userID}=useSelector((state)=>state.log)
   async function sendPrompt(prompt){
     try{
-        const response=await axios.post('http://192.168.0.195:4000/bot/botChat',{
+        const response=await axios.post('http://192.168.0.189:4000/bot/botChat',{
             prompt,
             userID
         })
@@ -29,7 +29,7 @@ const Chat = () => {
   }
   async function getChat(){
     try{
-        const response=await axios.post('http://192.168.0.195:4000/bot/getChat',{
+        const response=await axios.post('http://192.168.0.189:4000/bot/getChat',{
             userID
         })
         setMessages(response.data.chat.reverse())
@@ -44,14 +44,14 @@ const Chat = () => {
     return(
         <Send {...props}>
             <View >
-                <MaterialCommunityIcons name="send-circle" size={30} color="black" style={{marginBottom:responsiveHeight(1.1)}} />
+                <MaterialCommunityIcons name="send-circle" size={36} color="#AAACB7" style={{marginLeft:responsiveWidth(2),marginBottom:responsiveHeight(0.5)}} />
             </View>
         </Send>
     )
 }
 async function sendToCloud(messages){
     try{
-        await axios.post('http://192.168.0.195:4000/bot/chat',{
+        await axios.post('http://192.168.0.189:4000/bot/chat',{
             chat:messages,
             userID
         })
@@ -96,7 +96,13 @@ async function sendToCloud(messages){
           user={{
             _id: 1,
           }}
-
+          
+          renderInputToolbar={(props)=>{
+            return(
+                <InputToolbar {...props} containerStyle={{backgroundColor:"#282c34",height:responsiveHeight(5.5),justifyContent:'center',alignItems:'center'}}>
+                </InputToolbar>
+            )
+          }}
           alwaysShowSend
           renderSend={SendButton}
           renderBubble={renderBubble}

@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View,Modal, Image, Pressable,TouchableOpacity } from 'react-native'
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View,Modal, Image, Pressable,TouchableOpacity, Keyboard,TouchableWithoutFeedback } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import RegisterSvg from '../../assets/RegisterSvg'
 import { ActivityIndicator, Button,Divider,TextInput } from 'react-native-paper';
@@ -11,6 +11,7 @@ import { registerThunk, screenRemoval } from '../../redux/LogSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiveScreenWidth, responsiveWidth, useResponsiveFontSize, useResponsiveHeight, useResponsiveScreenHeight, useResponsiveScreenWidth } from 'react-native-responsive-dimensions';
 import * as ImagePicker from 'expo-image-picker';
+
 
 
 
@@ -77,21 +78,24 @@ const RegisterScreen = () => {
     return(
     <Modal visible={modal} transparent animationType='fade'>
       <View style={{flex:1,backgroundColor: 'rgba(0, 0, 0, 0.3)'}} >
-        <View style={{height:responsiveScreenHeight(30),width:responsiveScreenWidth(60),backgroundColor:'#fff',marginTop:responsiveHeight(35),marginLeft:responsiveWidth(21),borderRadius:10}}>
+        <View style={{height:responsiveScreenHeight(30
+          ),width:responsiveScreenWidth(60),backgroundColor:'#fff',marginTop:responsiveHeight(35),marginLeft:responsiveWidth(21),borderRadius:10}}>
           <Image style={{height:responsiveHeight(15),width:responsiveWidth(30),borderRadius:100,marginTop:responsiveHeight(1),top:responsiveHeight(2),marginLeft:responsiveWidth(15)}} 
           source={{uri:image?"data:image/png;base64,"+image:'https://i.pravatar.cc/300'}}/>
           <View style={{marginTop:responsiveHeight(7.3)}}>
-            <Pressable style={{width:'100%',backgroundColor:'#e4e4ee',justifyContent:'center',alignItems:'center',height:responsiveHeight(5)}} onPress={()=>setModal(false)} >
-                <Text style={{color:'red',fontSize:responsiveFontSize(1.7)}}>
+            <Pressable style={({pressed})=>pressed?styles.button1Pressed:styles.button1} onPress={()=>setModal(false)} >
+                <Text style={{color:'#FF605C',fontSize:responsiveFontSize(1.7)}}>
                   Close
                 </Text>
             </Pressable>
             <Divider bold/>
-            <Pressable style={{width:'100%',backgroundColor:'#e4e4ee',alignItems:'center',justifyContent:'center',height:responsiveHeight(5),borderBottomLeftRadius:12,borderBottomRightRadius:12}} onPress={openImagePicker}>
-              <Text style={{color:'blue',fontSize:responsiveFontSize(1.7)}}>
-                Pick Image
-              </Text>
-            </Pressable>
+            <View style={{backgroundColor:"white",borderRadius:10}}>
+              <Pressable style={({pressed})=>pressed?styles.button2Pressed:styles.button2} onPress={openImagePicker}>
+                <Text style={{color:'#4267B2',fontSize:responsiveFontSize(1.7)}}>
+                  Pick Image
+                </Text>
+              </Pressable>
+            </View>
           </View>
         </View>
       </View>
@@ -99,16 +103,17 @@ const RegisterScreen = () => {
     )
   }
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={{flex:1,backgroundColor:'#FFF'}}>
-      <View style={{alignSelf:'center',marginTop:15}}>
+      <View style={{alignSelf:'center',marginTop:responsiveHeight(5)}}>
         <RegisterSvg/>
       </View>
-      <View style={{position:'absolute',top:35,left:15,padding:5,overflow:'hidden',borderRadius:20,backgroundColor:'#f8fdff'}}>
+      <View style={{position:'absolute',top:responsiveHeight(5),left:responsiveHeight(1),padding:5,overflow:'hidden',borderRadius:20,backgroundColor:'#f8fdff'}}>
         <Entypo name="chevron-with-circle-left" size={30}  color="#27255C" style={{overflow:'hidden',borderRadius:16}} onPress={()=>navigation.goBack()} />
       </View>
       <View style={{left:50,bottom:25}}>
         <Text style={{fontSize:responsiveFontSize(4),color:'#27255C'}}>Glad You're here!</Text>
-        <Text style={{color:'#9CA6CE',bottom:7,left:5,fontSize:responsiveFontSize(1.7)}}>Fill in your details down below</Text>
+        <Text style={{color:'#9CA6CE',marginBottom:responsiveHeight(0.3),left:5,fontSize:responsiveFontSize(1.7)}}>Fill in your details down below</Text>
       </View>
       <KeyboardAvoidingView behavior='position'>
         <View style={{width:'100%',bottom:10}}>
@@ -178,21 +183,27 @@ const RegisterScreen = () => {
         </>
         :null}
       </View>
-      <View>
-        <Button onPress={()=>setModal(true)} mode='contained' style={{backgroundColor:'#27255C',width:'75%',alignSelf:'center',top:30,borderRadius:5,
+      <View style={{width:'75%',alignSelf:'center'}}>
+        <Button onPress={()=>setModal(true)} mode='contained' style={{backgroundColor:'#27255C',top:30,borderRadius:5,
         marginBottom:20}}>
             <Text style={{fontSize:responsiveFontSize(1.9),fontWeight:'400',color:'#F3F0EE'}}>Set up Profile picture</Text>
         </Button>
-        <Button onPress={()=>formik.handleSubmit()} mode='contained' style={{backgroundColor:'#27255C',width:'75%',alignSelf:'center',top:30,borderRadius:5}}>
+        <Button onPress={()=>formik.handleSubmit()} mode='contained' style={{backgroundColor:'#27255C',top:30,borderRadius:5}}>
           <Text style={{fontSize:responsiveFontSize(1.9),fontWeight:'400',color:'#F3F0EE'}}>Register</Text>
         </Button>
         <View>
         </View>
       </View>
     </View>
+    </TouchableWithoutFeedback>
   )
 }
 
 export default RegisterScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  button1:{width:'100%',backgroundColor:'#e4e4ee',justifyContent:'center',alignItems:'center',height:responsiveHeight(5)},
+  button1Pressed:{width:'100%',backgroundColor:'#e4e4ee',justifyContent:'center',alignItems:'center',height:responsiveHeight(5),opacity:0.75},
+  button2:{width:'100%',backgroundColor:'#e4e4ee',alignItems:'center',justifyContent:'center',height:responsiveHeight(5.3),borderBottomLeftRadius:12,borderBottomRightRadius:12},
+  button2Pressed:{width:'100%',backgroundColor:'#e4e4ee',alignItems:'center',justifyContent:'center',height:responsiveHeight(5.3),borderBottomLeftRadius:12,borderBottomRightRadius:12,opacity:0.75,backfaceVisibility:'hidden'}
+})

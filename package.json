@@ -6,17 +6,24 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "postinstall": "rn-nodeify --install 'crypto,process,stream,events' --hack"
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
     "@fullstackcraft/react-native-keyboard-shift": "^1.1.5-alpha0",
     "@lowkey/react-native-gif": "^3.1.0",
+    "@metamask/sdk": "^0.1.0",
+    "@react-native-async-storage/async-storage": "~1.17.3",
+    "@react-native-material/core": "^1.3.7",
     "@react-navigation/drawer": "^6.5.7",
     "@react-navigation/native": "^6.1.1",
     "@react-navigation/native-stack": "^6.9.7",
     "@reduxjs/toolkit": "^1.9.1",
     "axios": "^1.2.1",
+    "crypto": "^1.0.1",
+    "ethers": "^6.0.8",
+    "events": "^3.3.0",
     "expo": "^47.0.0",
     "expo-file-system": "~15.1.1",
     "expo-image-picker": "~14.0.2",
@@ -25,12 +32,16 @@
     "expo-status-bar": "~1.4.2",
     "formik": "^2.2.9",
     "moment": "^2.29.4",
+    "process": "^0.11.10",
     "react": "^18.1.0",
     "react-native": "0.70.5",
+    "react-native-background-timer": "^2.4.1",
+    "react-native-crypto": "^2.2.0",
     "react-native-element-textinput": "^2.0.1",
     "react-native-gesture-handler": "~2.8.0",
     "react-native-gifted-chat": "^1.1.1",
     "react-native-paper": "^5.0.2",
+    "react-native-randombytes": "^3.6.1",
     "react-native-reanimated": "~2.12.0",
     "react-native-reanimated-carousel": "^3.3.0",
     "react-native-responsive-dimensions": "^3.1.1",
@@ -38,12 +49,32 @@
     "react-native-screens": "~3.18.0",
     "react-native-svg": "13.4.0",
     "react-redux": "^8.0.5",
+    "readable-stream": "^1.0.33",
     "redux": "^4.2.0",
+    "rn-nodeify": "^10.3.0",
+    "stream": "^0.0.2",
+    "stream-browserify": "^1.0.0",
     "use-memo-one": "^1.1.3",
     "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3"
   },
-  "private": true
+  "private": true,
+  "react-native": {
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify"
+  },
+  "browser": {
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify"
+  }
 }

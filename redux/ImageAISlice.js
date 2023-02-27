@@ -10,7 +10,7 @@ const initialState={
   }
 export const getImageThunk=createAsyncThunk('/getImage',async({token,prompt},{rejectWithValue})=>{
     try{
-        const response=await axios.post('http://192.168.0.195:4000/todo/todos',{
+        const response=await axios.post('http://192.168.0.189:4000/todo/todos',{
           prompt
         },{
           headers:{
@@ -33,6 +33,14 @@ export const getImageThunk=createAsyncThunk('/getImage',async({token,prompt},{re
 const ImageAISlice=createSlice({
     name:'ImageAISlice',
     initialState,
+    reducers:{
+      signOutImage:(state)=>{
+        state.image=[]
+        state.Imageloading=false
+        state.Imagesuccess=false
+        state.Imageerror=null
+      }
+    },
     extraReducers:{
         [getImageThunk.pending]:(state)=>{
             state.Imageloading=true;
@@ -53,3 +61,4 @@ const ImageAISlice=createSlice({
     }
 })
 export default ImageAISlice.reducer;
+export const{signOutImage}=ImageAISlice.actions

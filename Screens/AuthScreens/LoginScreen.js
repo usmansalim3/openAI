@@ -1,20 +1,24 @@
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { useFormik } from 'formik';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { ActivityIndicator, TextInput } from 'react-native-paper';
 import { Button } from 'react-native-paper';
 import LoginSvg from '../../assets/LoginSvg';
 import * as yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux';
-import { loginThunk, screenRemoval } from '../../redux/LogSlice';
+import { logIn, loginThunk, screenRemoval } from '../../redux/LogSlice';
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
+import { useCallback } from 'react';
+import { platform } from 'process';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function LoginScreen() {
   const dispatch=useDispatch();
+  const route=useRoute();
   const userState=useSelector((state)=>state.log);
   const {email,token,error,success,loading}=userState
   const navigation=useNavigation();
@@ -33,37 +37,58 @@ export default function LoginScreen() {
     }
   })
   useEffect(()=>{
+    async function isLoggedIn(){
+      try{
+        const mail=await AsyncStorage.getItem("email");
+        if(mail){
+          formik.setFieldValue("email",mail)
+        }
+        const loggedIn=await AsyncStorage.getItem("token");
+        if(loggedIn){
+          dispatch(logIn(loggedIn))
+          navigation.navigate("Home");
+        }
+      }catch(e){
+        console.log(e);
+      }
+    }
+    isLoggedIn();
+  },[])
+
+  useFocusEffect(
+    useCallback(()=>{
+      if(route.params?.resetForm){
+        formik.setFieldValue("password","")
+        formik.setFieldValue("email",route.params.email)
+      }
+    },[navigation,route])
+  )
+  useEffect(()=>{
     if(success&&!error&&email&&token){
       
       navigation.navigate('Home')
     }
   },[userState,dispatch])
-  useLayoutEffect(()=>{
+  useEffect(()=>{
     dispatch(screenRemoval())
     return ()=>{
       dispatch(screenRemoval());
     }
   },[])
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{flex:1}}>
-      <View style={{alignSelf:'center'}}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <View style={styles.container} >
+      <View style={{alignSelf:'center',top:responsiveHeight(1.5)}}>
         <LoginSvg/>
       </View>
       <View style={{bottom:15}}>
         <View style={{left:50}}>
-          <Text style={{fontSize:responsiveFontSize(6),color:'#27255C'}}>Welcome</Text>
+          <Text style={{fontSize:responsiveFontSize(6),color:'#27255C',marginBottom:responsiveHeight(0.3)}}>Welcome</Text>
           <Text style={{color:'#9CA6CE',left:5,bottom:10,fontSize:responsiveFontSize(2)}}>Sign in down below</Text>
         </View>
         <View style={{width:'100%',height:'100%'}}>
           <View style={{top:5}}>
-          <View style={{left:50,top:10}}>
-            {(formik.errors.email&&formik.touched.email)?
-            <View style={{flexDirection:'row'}}>
-                <MaterialIcons name="error" size={13} style={{alignSelf:'center',marginRight:3}} color='#ff7961'/>
-                <Text style={{color:'red',fontSize:12}}>{formik.errors.email}</Text>
-            </View>:null}
-          </View>
-          
             <TextInput
             left={<TextInput.Icon icon={'email'} size={22}/>} 
             mode='outlined'
@@ -76,14 +101,8 @@ export default function LoginScreen() {
             style={{width:'80%',alignSelf:'center',marginVertical:10,backgroundColor:'#e4e4ee',fontSize:responsiveFontSize(1.9)}}
             />
             <View style={{bottom:3}}>
-            <View style={{left:50}} >
-              {(formik.errors.password&&formik.touched.password)?
-              <View style={{flexDirection:'row'}}>
-                <MaterialIcons name="error" size={13} style={{alignSelf:'center',marginRight:3}} color='#ff7961'/>
-                <Text style={{color:'red',fontSize:12}}>{formik.errors.password}</Text>
-              </View>:null}
-            </View>
             <TextInput
+            
             left={<TextInput.Icon icon={'lock'} size={22}/>}
             right={<TextInput.Icon icon={visible?'eye':'eye-off'} onPress={()=>setVisible((state)=>!state)} size={22} />}
             secureTextEntry={visible}
@@ -111,9 +130,11 @@ export default function LoginScreen() {
                 :null
               }
             </View>
-          <Button onPress={()=>formik.handleSubmit()} mode='contained' style={{backgroundColor:'#27255C',width:'75%',alignSelf:'center',marginTop:'20%',borderRadius:5}}>
-            <Text style={{fontSize:18,fontWeight:'400',color:'#F3F0EE'}}>Login</Text>
-          </Button>
+          <View style={{width:'100%',alignItems:"center"}}>
+            <Pressable android_ripple={{color:"#3c3a6c"}} onPress={()=>formik.handleSubmit()} style={Platform.OS=='android'?{justifyContent:'center',alignItems:'center',width:"75%",height:responsiveHeight(5),backgroundColor:'#27255C',marginTop:'20%',borderRadius:5}:({pressed})=>pressed?{justifyContent:'center',alignItems:'center',width:"75%",height:responsiveHeight(5),backgroundColor:'#27255C',marginTop:'20%',borderRadius:5,opacity:0.9}:{justifyContent:'center',alignItems:'center',width:"75%",height:responsiveHeight(5),backgroundColor:'#27255C',marginTop:'20%',borderRadius:5}}>
+              {loading?<ActivityIndicator animating={true} size="small" />:<Text style={{fontSize:18,fontWeight:'400',color:'#F3F0EE'}}>Login</Text>}
+            </Pressable>
+          </View>
           <View style={{alignSelf:'center',marginTop:3}}>
             <TouchableOpacity>
               <Text style={{fontWeight:'400',color:'#9CA6CE',fontSize:14}}>forgot password?</Text>
@@ -127,7 +148,8 @@ export default function LoginScreen() {
           </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -136,5 +158,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF',
     height:'100%'
-  }
+  },
+  androidButtonStyle:{backgroundColor:'#27255C',width:'75%',alignSelf:'center',marginTop:'20%',borderRadius:5},
+  iosButtonStyle:{backgroundColor:'#27255C',width:'75%',alignSelf:'center',marginTop:'20%',borderRadius:5}
 });

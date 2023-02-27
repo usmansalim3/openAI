@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
 
 const initialState={
@@ -13,7 +14,7 @@ const initialState={
 
 export const registerThunk=createAsyncThunk('users/register',async ({email,password,phoneNumber,pfp},{rejectWithValue})=>{
     try{
-        const response=await axios.post('http://192.168.0.195:4000/users/register',{
+        const response=await axios.post('http://192.168.0.189:4000/users/register',{
           email,
           password,
           phoneNumber,
@@ -27,7 +28,7 @@ export const registerThunk=createAsyncThunk('users/register',async ({email,passw
 
 export const loginThunk=createAsyncThunk('users/login',async({email,password},{rejectWithValue})=>{
     try{
-        const response=await axios.post('http://192.168.0.195:4000/users/login',{
+        const response=await axios.post('http://192.168.0.189:4000/users/login',{
             email,
             password
         })
@@ -44,7 +45,28 @@ const LogSlice=createSlice({
     reducers:{
         screenRemoval:(state)=>{
             state.error='';
+        },
+        signOutLog:(state)=>{
+            state.userID=''
+            state.error=''
+            state.token=''
+            state.email=''
+            state.userpic=null
+            state.loading=false
+            state.success=false
+            AsyncStorage.removeItem("token",()=>console.log("done"));
             
+            
+        },
+        logIn:(state,{payload})=>{
+            const data=JSON.parse(payload)
+            state.userID=data.userID
+            state.error=''
+            state.token=data.token
+            state.email=data.email;
+            state.userpic=data.userpic;
+            state.loading=false
+            state.success=false
         }
     },
     extraReducers:{
@@ -62,6 +84,9 @@ const LogSlice=createSlice({
             state.success=true;
             state.error='';
             state.loading=false;
+            const dataObj={userID:payload.userID,token:payload.accessToken,email:payload.email,userpic:payload.userpic};
+            AsyncStorage.setItem("token",dataObj);
+            AsyncStorage.setItem("email",payload.email)
             console.log('fulfilled')
         },
         [registerThunk.pending]:(state)=>{
@@ -82,6 +107,11 @@ const LogSlice=createSlice({
             state.error='';
             state.loading=false;
             state.userpic=payload.userpic;
+            console.log("setting",payload.token)
+            const dataObj={userID:payload.userID,token:payload.accessToken,email:payload.email,userpic:payload.userpic};
+            //console.log(JSON.stringify(dataObj));
+            AsyncStorage.setItem("token",JSON.stringify(dataObj));
+            AsyncStorage.setItem("email",payload.email);
             console.log('fulfilled')
         },
         [loginThunk.rejected]:(state,{payload})=>{
@@ -93,4 +123,4 @@ const LogSlice=createSlice({
     }
 })
 export default LogSlice.reducer;
-export const {screenRemoval}=LogSlice.actions
+export const {screenRemoval,signOutLog,logIn}=LogSlice.actions
