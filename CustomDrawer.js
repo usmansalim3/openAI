@@ -11,17 +11,24 @@ import { signOutImage } from './redux/ImageAISlice'
 import { signOutLog } from './redux/LogSlice'
 import { signOutSaved } from './redux/SavedImagesSlice'
 import { useNavigation } from '@react-navigation/native'
+import { disconnectWalletThunk, ethSignOut } from './redux/EthSlice'
 
 const CustomDrawer = (props) => {
   const dispatch=useDispatch();
   const navigation=useNavigation();
-  const {email,userpic}=useSelector(state=>state.log)
+  const {email,userpic,userID}=useSelector(state=>state.log)
+  const{isConnected}=useSelector((state)=>state.ethereum)
   const username=email.slice(0,email.indexOf('@'));
+  
+  function disconnectWallet(){
+    dispatch(disconnectWalletThunk(userID));
+  }
 
   function signOut(){
     dispatch(signOutLog());
     dispatch(signOutImage());
     dispatch(signOutSaved());
+    dispatch(ethSignOut());
     navigation.navigate("Login",{
       resetForm:true,
       email
@@ -37,8 +44,11 @@ const CustomDrawer = (props) => {
         <Divider style={{backgroundColor:'#202123'}} bold/>
       </ImageBackground>
       <DrawerItemList {...props}/>
-      <View style={{marginTop:responsiveHeight(42)}}>
+      <View style={{marginTop:responsiveHeight(10)}}>
        <DrawerItem label={"Sign out"} onPress={signOut} labelStyle={{color:"#AAACB7",fontSize:responsiveScreenFontSize(1.9)}} icon={({size,color})=><AntDesign name="logout" size={size} style={{color:'#0088cc'}}/>}/>
+      </View>
+      <View>
+      {isConnected?<DrawerItem label={"Disconnect Wallet"} onPress={disconnectWallet} labelStyle={{color:"#AAACB7",fontSize:responsiveScreenFontSize(1.9)}} icon={({size,color})=><AntDesign name="wallet" size={size} style={{color:'#0088cc'}}/>}/>:<></>}
       </View>
     </DrawerContentScrollView>
 

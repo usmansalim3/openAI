@@ -44,6 +44,7 @@ export default function LoginScreen() {
           formik.setFieldValue("email",mail)
         }
         const loggedIn=await AsyncStorage.getItem("token");
+        console.log(loggedIn)
         if(loggedIn){
           dispatch(logIn(loggedIn))
           navigation.navigate("Home");

@@ -39,6 +39,11 @@ const ImageAISlice=createSlice({
         state.Imageloading=false
         state.Imagesuccess=false
         state.Imageerror=null
+      },
+      clearImageError:(state)=>{
+        state.Imageloading=false
+        state.Imagesuccess=false
+        state.Imageerror=null
       }
     },
     extraReducers:{
@@ -53,6 +58,7 @@ const ImageAISlice=createSlice({
             state.Imageerror=null;
         },
         [getImageThunk.rejected]:(state,{payload})=>{
+            console.log(payload)
             state.Imageerror=payload;
             state.Imagesuccess=false;
             state.Imageloading=false;
@@ -61,4 +67,4 @@ const ImageAISlice=createSlice({
     }
 })
 export default ImageAISlice.reducer;
-export const{signOutImage}=ImageAISlice.actions
+export const{signOutImage,clearImageError}=ImageAISlice.actions

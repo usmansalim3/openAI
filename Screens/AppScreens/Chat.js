@@ -1,7 +1,7 @@
 import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import KeyboardShift from '@fullstackcraft/react-native-keyboard-shift/lib/components/KeyboardShift'
-import { TextInput } from 'react-native-paper'
+import { MD2Colors, TextInput } from 'react-native-paper'
 import axios from 'axios'
 import { Bubble, GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat'
 import { nanoid } from '@reduxjs/toolkit'
@@ -96,10 +96,9 @@ async function sendToCloud(messages){
           user={{
             _id: 1,
           }}
-          
           renderInputToolbar={(props)=>{
             return(
-                <InputToolbar {...props} containerStyle={{backgroundColor:"#282c34",height:responsiveHeight(5.5),justifyContent:'center',alignItems:'center'}}>
+                <InputToolbar {...props} textInputStyle={{color:MD2Colors.grey300}} containerStyle={{backgroundColor:"#202123",justifyContent:'center',alignItems:'center'}} >
                 </InputToolbar>
             )
           }}

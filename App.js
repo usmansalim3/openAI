@@ -12,7 +12,7 @@ import ImageAISlice from './redux/ImageAISlice';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Chat from './Screens/AppScreens/Chat';
 import CustomDrawer from './CustomDrawer' ;
-import { AntDesign, EvilIcons, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign, Entypo, EvilIcons, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import ImagePick from './Screens/AuthScreens/ImagePick';
 import SavedImagesSlice from './redux/SavedImagesSlice';
 import { Keyboard } from 'react-native';
@@ -20,7 +20,10 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLayoutEffect } from 'react';
-import Etherium from './Screens/AppScreens/Etherium';
+import Ethereum from './Screens/AppScreens/Ethereum';
+import EthSlice from './redux/EthSlice';
+import TransactionHistory from './Screens/AppScreens/TransactionHistory';
+
 
 
 function DrawerScreens(){
@@ -52,8 +55,11 @@ function DrawerScreens(){
         unmountOnBlur:true,
         drawerIcon:()=><AntDesign name="like1" size={22} color="#0088cc" />
       }}/>
-      <Drawer.Screen component={Etherium} name="Etherium" options={{
+      <Drawer.Screen component={Ethereum} name="Ethereum" options={{
         drawerIcon:({color})=><FontAwesome5 name="coins" size={24} color={color} />
+      }}/>
+      <Drawer.Screen component={TransactionHistory} name={"Transactions"} options={{
+        drawerIcon:({color})=><Entypo name="book" size={24} color={color} />
       }}/>
     </Drawer.Navigator>
   )
@@ -61,7 +67,8 @@ function DrawerScreens(){
 const reducer= combineReducers({
     log:LogSlice,
     ImageAI:ImageAISlice,
-    savedImages:SavedImagesSlice
+    savedImages:SavedImagesSlice,
+    ethereum:EthSlice
 })
 
 export default function App() {

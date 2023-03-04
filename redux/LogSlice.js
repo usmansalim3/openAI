@@ -47,6 +47,7 @@ const LogSlice=createSlice({
             state.error='';
         },
         signOutLog:(state)=>{
+            AsyncStorage.removeItem("token",()=>console.log(" removed "));
             state.userID=''
             state.error=''
             state.token=''
@@ -54,12 +55,12 @@ const LogSlice=createSlice({
             state.userpic=null
             state.loading=false
             state.success=false
-            AsyncStorage.removeItem("token",()=>console.log("done"));
             
             
         },
         logIn:(state,{payload})=>{
             const data=JSON.parse(payload)
+            console.log(payload.token)
             state.userID=data.userID
             state.error=''
             state.token=data.token
@@ -85,7 +86,7 @@ const LogSlice=createSlice({
             state.error='';
             state.loading=false;
             const dataObj={userID:payload.userID,token:payload.accessToken,email:payload.email,userpic:payload.userpic};
-            AsyncStorage.setItem("token",dataObj);
+            AsyncStorage.setItem("token",JSON.stringify(dataObj));
             AsyncStorage.setItem("email",payload.email)
             console.log('fulfilled')
         },
@@ -110,7 +111,9 @@ const LogSlice=createSlice({
             console.log("setting",payload.token)
             const dataObj={userID:payload.userID,token:payload.accessToken,email:payload.email,userpic:payload.userpic};
             //console.log(JSON.stringify(dataObj));
-            AsyncStorage.setItem("token",JSON.stringify(dataObj));
+            AsyncStorage.setItem("token",JSON.stringify(dataObj),()=>{
+                console.log("saved")
+            });
             AsyncStorage.setItem("email",payload.email);
             console.log('fulfilled')
         },
