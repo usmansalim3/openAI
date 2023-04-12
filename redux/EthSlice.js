@@ -14,17 +14,18 @@ const initialState={
     walletBalance:0,
     transactions:[],
     fetchingTxs:false,
+    txDone:false,
     txError:false
 }
 export const checkWalletThunk=createAsyncThunk("/isWalletConnected",async(userID)=>{
-    const res=await axios.post("http://192.168.0.189:4000/ethereum/isWalletConnected",{
+    const res=await axios.post("https://openai-backend-g0a1.onrender.com/ethereum/isWalletConnected",{
         userID
     })
     return res.data
 })
 export const connectWalletThunk=createAsyncThunk("/connectWallet",async({userID,privateKey},{rejectWithValue})=>{
     try{
-        const res=await axios.post("http://192.168.0.189:4000/ethereum/connectWallet",{
+        const res=await axios.post("https://openai-backend-g0a1.onrender.com/ethereum/connectWallet",{
           privateKey,
           userID
         })
@@ -38,7 +39,7 @@ export const connectWalletThunk=createAsyncThunk("/connectWallet",async({userID,
 export const showBalanceThunk=createAsyncThunk("/showBalance",async(address)=>{
     console.log(address)
     try{
-        const res=await axios.post("http://192.168.0.189:4000/ethereum/showBalance",{
+        const res=await axios.post("https://openai-backend-g0a1.onrender.com/ethereum/showBalance",{
                 address
             }
         )
@@ -50,7 +51,7 @@ export const showBalanceThunk=createAsyncThunk("/showBalance",async(address)=>{
 })
 export const transferThunk=createAsyncThunk("/transfer",async({account,amt,walletPrivateKey,userID},{rejectWithValue})=>{
     try{
-        const response=await axios.post("http://192.168.0.189:4000/ethereum/transfer",{
+        const response=await axios.post("https://openai-backend-g0a1.onrender.com/ethereum/transfer",{
             address:account,
             amount:amt,
             walletPrivateKey,
@@ -65,7 +66,7 @@ export const transferThunk=createAsyncThunk("/transfer",async({account,amt,walle
 })
 export const transactionsThunk=createAsyncThunk("/transactionsThunk",async({userID},{rejectWithValue})=>{
     try{
-        const res=await axios.post("http://192.168.0.189:4000/ethereum/transactions",{
+        const res=await axios.post("https://openai-backend-g0a1.onrender.com/ethereum/transactions",{
             userID
         })
         return res.data;
@@ -75,7 +76,7 @@ export const transactionsThunk=createAsyncThunk("/transactionsThunk",async({user
 })
 export const disconnectWalletThunk=createAsyncThunk("/disconnectWallet",async(userID)=>{
     try{
-        await axios.post("http://192.168.0.189:4000/ethereum/disconnectWallet",{
+        await axios.post("https://openai-backend-g0a1.onrender.com/ethereum/disconnectWallet",{
             userID
         })
     }catch(e){
@@ -99,7 +100,30 @@ const ethSlice=createSlice({
         },
         clearTransferError:(state)=>{
             state.transferError="";
+        },
+        onTxDone:(state)=>{
+            state.txDone=false;
+        },
+        sortByDate:(state)=>{
+            state.transactions=state.transactions.sort((a,b)=>{
+                if(a.time>b.time){
+                    return -1;
+                }else if(a.time<b.time){
+                    return 1;
+                }else return 0;
+            })
+        },
+        sortByAmount:(state)=>{
+            state.transactions=state.transactions.sort((a,b)=>{
+                console.log(a.amount)
+                if((a.amount)>(b.amount)){
+                    return -1;
+                }else if((a.amount)<(b.amount)){
+                    return 1;
+                }else return 0;
+            })
         }
+        
     },
     extraReducers:{
         [checkWalletThunk.pending]:(state)=>{
@@ -155,6 +179,7 @@ const ethSlice=createSlice({
             console.log(payload)
             state.loading=false;
             state.transferError="";
+            state.txDone=true;
             state.walletBalance=payload.walletBalance
         },
         [transferThunk.rejected]:(state,{payload})=>{
@@ -169,6 +194,7 @@ const ethSlice=createSlice({
             //console.log(payload);
             state.transactions=payload.tx
             state.fetchingTxs=false;
+            console.log("fetching")
         },
         [transactionsThunk.rejected]:(state,{payload})=>{
             state.fetchingTxs=false;
@@ -186,4 +212,4 @@ const ethSlice=createSlice({
 
 })
 export default ethSlice.reducer;
-export const{clearTransferError,ethSignOut}=ethSlice.actions
+export const{clearTransferError,ethSignOut,onTxDone,sortByDate,sortByAmount}=ethSlice.actions

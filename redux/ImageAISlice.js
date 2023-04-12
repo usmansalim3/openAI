@@ -10,7 +10,7 @@ const initialState={
   }
 export const getImageThunk=createAsyncThunk('/getImage',async({token,prompt},{rejectWithValue})=>{
     try{
-        const response=await axios.post('http://192.168.0.189:4000/todo/todos',{
+        const response=await axios.post('https://openai-backend-g0a1.onrender.com/todo/todos',{
           prompt
         },{
           headers:{

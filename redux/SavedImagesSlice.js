@@ -10,7 +10,7 @@ const initialState={
 }
 export const uploadImageThunk=createAsyncThunk('/uploadImage',async({token,imageData,prompt,time,userID},{rejectWithValue})=>{
     try{
-        await axios.post('http://192.168.0.189:4000/todo/uploadImage',{
+        await axios.post('https://openai-backend-g0a1.onrender.com/todo/uploadImage',{
           prompt,
           image:imageData,
           time,
@@ -29,7 +29,7 @@ export const uploadImageThunk=createAsyncThunk('/uploadImage',async({token,image
 })
 export const getSavedImagesThunk=createAsyncThunk('/getSavedImages',async({userID,token})=>{
   try{
-    const response=await axios.post('http://192.168.0.189:4000/todo/getSavedImages',{
+    const response=await axios.post('https://openai-backend-g0a1.onrender.com/todo/getSavedImages',{
       userID
     },{
       headers:{
@@ -44,12 +44,13 @@ export const getSavedImagesThunk=createAsyncThunk('/getSavedImages',async({userI
     //console.log(error.response.data.error)
   }
 })
-export const DeleteImageThunk=createAsyncThunk('/DeleteImage',async({userID,token,image})=>{
+export const DeleteImageThunk=createAsyncThunk('/DeleteImage',async({userID,token,image,time})=>{
   console.log('delete')
   try{
-    const response=await axios.post('http://192.168.0.189:4000/todo/DeleteImage',{
+    const response=await axios.post('https://openai-backend-g0a1.onrender.com/todo/DeleteImage',{
       userID,
-      image
+      image,
+      time
     },{
       headers:{
         'authorization': `Bearer ${token}`

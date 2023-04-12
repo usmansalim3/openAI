@@ -9,12 +9,16 @@ const initialState={
     email:'',
     userpic:null,
     loading:false,
-    success:false
+    success:false,
+    otpSent:false,
+    otpVerified:false,
+    otpError:false,
+    passwordChanged:false
 }
 
 export const registerThunk=createAsyncThunk('users/register',async ({email,password,phoneNumber,pfp},{rejectWithValue})=>{
     try{
-        const response=await axios.post('http://192.168.0.189:4000/users/register',{
+        const response=await axios.post('https://openai-backend-g0a1.onrender.com/users/register',{
           email,
           password,
           phoneNumber,
@@ -28,7 +32,7 @@ export const registerThunk=createAsyncThunk('users/register',async ({email,passw
 
 export const loginThunk=createAsyncThunk('users/login',async({email,password},{rejectWithValue})=>{
     try{
-        const response=await axios.post('http://192.168.0.189:4000/users/login',{
+        const response=await axios.post('https://openai-backend-g0a1.onrender.com/users/login',{
             email,
             password
         })
@@ -38,7 +42,52 @@ export const loginThunk=createAsyncThunk('users/login',async({email,password},{r
         return rejectWithValue(error.response.data.error);
     }
 })
-
+export const forgotPasswordThunk=createAsyncThunk("/forgotPassword",async({email},{rejectWithValue})=>{
+    try{
+        const response=await axios.post("https://openai-backend-g0a1.onrender.com/users/forgotPassword",{
+            email
+        })
+        console.log(response.data);
+        return response.data
+    }catch(e){
+        console.log(e)
+        return rejectWithValue(e.response.data.error);
+    }
+})
+export const verifyOtpThunk=createAsyncThunk("/verifyOtp",async({otp,email},{rejectWithValue})=>{
+    try{
+        const response=await axios.post("https://openai-backend-g0a1.onrender.com/users/verifyOTP",{
+            otp,
+            email
+        })
+        console.log(response.data)
+        return response.data
+    }catch(e){
+        return rejectWithValue(e.response.data.error)
+    }
+})
+export const invalidateOtp=createAsyncThunk("/invalidateOtp",async(email)=>{
+    try{
+        const response=await axios.post("https://openai-backend-g0a1.onrender.com/users/invalidateOTP",{
+            email
+        })
+        return response.data;
+    }catch(e){
+        console.log(e);
+    }
+})
+export const changePasswordThunk=createAsyncThunk("/changePassword",async({password,email},{rejectWithValue})=>{
+    try{
+        const response=await axios.post("https://openai-backend-g0a1.onrender.com/users/changePassword",{
+            newPassword:password,
+            email
+        })
+        console.log(response.data)
+        return response.data
+    }catch(e){
+        return rejectWithValue(e.response.data.error)
+    }
+})
 const LogSlice=createSlice({
     name:'LogSlice',
     initialState,
@@ -68,6 +117,15 @@ const LogSlice=createSlice({
             state.userpic=data.userpic;
             state.loading=false
             state.success=false
+        },
+        resetOTPState:(state)=>{
+            state.otpError=false;
+            state.otpSent=false;
+            state.passwordChanged=false;
+            state.otpVerified=false;
+        },
+        clearError:(state)=>{
+            state.otpError=false;
         }
     },
     extraReducers:{
@@ -122,8 +180,31 @@ const LogSlice=createSlice({
             state.success=false;
             state.loading=false;
             console.log('reject')
+        },
+        [forgotPasswordThunk.pending]:(state)=>{
+            //state.otpSent=false;
+        },
+        [forgotPasswordThunk.fulfilled]:(state)=>{
+            state.otpSent=true;
+            state.otpError=false
+        },
+        [forgotPasswordThunk.rejected]:(state)=>{
+            state.otpError=true;
+            
+        },
+        [verifyOtpThunk.rejected]:(state,{payload})=>{
+            state.otpError=true;
+            console.log(payload)
+        },
+        [verifyOtpThunk.fulfilled]:(state,{payload})=>{
+            state.otpVerified=true
+            state.otpError=false
+            console.log(payload)
+        },
+        [changePasswordThunk.fulfilled]:(state)=>{
+            state.passwordChanged=true;
         }
     }
 })
 export default LogSlice.reducer;
-export const {screenRemoval,signOutLog,logIn}=LogSlice.actions
+export const {screenRemoval,signOutLog,logIn,resetOTPState,clearError}=LogSlice.actions

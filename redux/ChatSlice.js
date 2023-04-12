@@ -6,7 +6,7 @@ const initialState={
 }
 export const getChatThunk=createAsyncThunk('/getChat',async({userID},{rejectWithValue})=>{
     try{
-        const response=await axios.post('http://192.168.0.189:4000/todo/getChat',{
+        const response=await axios.post('http://192.168.0.195:4000/todo/getChat',{
             userID
         })
         return(response.data.chat.reverse())
@@ -16,7 +16,7 @@ export const getChatThunk=createAsyncThunk('/getChat',async({userID},{rejectWith
 })
 export const messageThunk=createAsyncThunk('/message',async({userID,message})=>{
     try{
-        await axios.post('http://192.168.0.189:4000/todo/chat',{
+        await axios.post('http://192.168.0.195:4000/todo/chat',{
             chat:message,
             userID
         })
@@ -26,7 +26,7 @@ export const messageThunk=createAsyncThunk('/message',async({userID,message})=>{
 })
 export const sendPromptThunk=createAsyncThunk('prompt',async({prompt,userID})=>{
     try{
-        const response=await axios.post('http://192.168.0.189:4000/todo/chatBot',{
+        const response=await axios.post('http://192.168.0.195:4000/todo/chatBot',{
             prompt,
             userID
         })
