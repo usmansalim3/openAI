@@ -1,6 +1,6 @@
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View,Modal, Image, Pressable,TouchableOpacity, Keyboard,TouchableWithoutFeedback } from 'react-native'
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View,Modal, Image, Pressable,TouchableOpacity, Keyboard,TouchableWithoutFeedback, Platform } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
-import RegisterSvg from '../../assets/RegisterSvg'
+import RegisterSvg from '../../assets/SVGS/RegisterSvg'
 import { ActivityIndicator, Button,Divider,TextInput } from 'react-native-paper';
 import { useFormik } from 'formik';
 import * as yup from 'yup'
@@ -11,6 +11,8 @@ import { registerThunk, screenRemoval } from '../../redux/LogSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiveScreenWidth, responsiveWidth, useResponsiveFontSize, useResponsiveHeight, useResponsiveScreenHeight, useResponsiveScreenWidth } from 'react-native-responsive-dimensions';
 import * as ImagePicker from 'expo-image-picker';
+import "yup-phone";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
@@ -41,7 +43,7 @@ const RegisterScreen = () => {
     validationSchema:yup.object().shape({
         email:yup.string().min(3,"Too short!").max(30,"Name length limited reached!").required("Field is required!").email("Enter a valid email"),
         password:yup.string().min(3,"Too short!").max(20,"Name length limited reached!").required("Field is required!"),
-        phoneNumber:yup.string().required('Field is required')
+        phoneNumber:yup.string().required('Field is required').phone("IN","Enter valid phone number")
     }),
     onSubmit:(values)=>{
         dispatch(registerThunk({
@@ -82,14 +84,14 @@ const RegisterScreen = () => {
           ),width:responsiveScreenWidth(60),backgroundColor:'#fff',marginTop:responsiveHeight(35),marginLeft:responsiveWidth(21),borderRadius:10}}>
           <Image style={{height:responsiveHeight(15),width:responsiveWidth(30),borderRadius:100,marginTop:responsiveHeight(1),top:responsiveHeight(2),marginLeft:responsiveWidth(15)}} 
           source={{uri:image?"data:image/png;base64,"+image:'https://i.pravatar.cc/300'}}/>
-          <View style={{marginTop:responsiveHeight(7.3)}}>
+          <View style={{marginTop:responsiveHeight(7)}}>
             <Pressable style={({pressed})=>pressed?styles.button1Pressed:styles.button1} onPress={()=>setModal(false)} >
                 <Text style={{color:'#FF605C',fontSize:responsiveFontSize(1.7)}}>
                   Close
                 </Text>
             </Pressable>
             <Divider bold/>
-            <View style={{backgroundColor:"white",borderRadius:10}}>
+            <View style={{backgroundColor:"white",borderRadius:14.5}}>
               <Pressable style={({pressed})=>pressed?styles.button2Pressed:styles.button2} onPress={openImagePicker}>
                 <Text style={{color:'#4267B2',fontSize:responsiveFontSize(1.7)}}>
                   Pick Image
@@ -104,16 +106,18 @@ const RegisterScreen = () => {
   }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
+
     <View style={{flex:1,backgroundColor:'#FFF'}}>
-      <View style={{alignSelf:'center',marginTop:responsiveHeight(5)}}>
+      <View style={{alignSelf:'center',marginTop:Platform.OS=='android'?responsiveHeight(5):responsiveHeight(7)}}>
         <RegisterSvg/>
       </View>
       <View style={{position:'absolute',top:responsiveHeight(5),left:responsiveHeight(1),padding:5,overflow:'hidden',borderRadius:20,backgroundColor:'#f8fdff'}}>
         <Entypo name="chevron-with-circle-left" size={30}  color="#27255C" style={{overflow:'hidden',borderRadius:16}} onPress={()=>navigation.goBack()} />
       </View>
-      <View style={{left:50,bottom:25}}>
-        <Text style={{fontSize:responsiveFontSize(4),color:'#27255C'}}>Glad You're here!</Text>
-        <Text style={{color:'#9CA6CE',marginBottom:responsiveHeight(0.3),left:5,fontSize:responsiveFontSize(1.7)}}>Fill in your details down below</Text>
+      <View style={{left:50,bottom:responsiveHeight(2)}}>
+        <Text style={{fontSize:responsiveFontSize(4),color:'#27255C',fontFamily:'ProximaNova'}}>Glad You're here!</Text>
+        <Text style={{color:'#9CA6CE',marginBottom:responsiveHeight(0.5),left:5,fontSize:responsiveFontSize(1.9),fontFamily:'ProximaNova'}}>Fill in your details down below</Text>
       </View>
       <KeyboardAvoidingView behavior='position'>
         <View style={{width:'100%',bottom:10}}>
@@ -131,7 +135,7 @@ const RegisterScreen = () => {
               outlineColor={'#3949ab'}
               activeOutlineColor={'#6f74dd'}
               onBlur={formik.handleBlur('email')}
-              style={{width:'80%',alignSelf:'center',backgroundColor:'#e4e4ee',fontSize:responsiveFontSize(1.9)}}
+              style={{width:'80%',alignSelf:'center',backgroundColor:'#e4e4ee',fontSize:responsiveFontSize(1.9),fontFamily:'ProximaNova'}}
               />
           </View>
           <View style={{marginVertical:0}}>
@@ -173,24 +177,30 @@ const RegisterScreen = () => {
         </View>
       </KeyboardAvoidingView>
       {modal?<PictureModal/>:null}
-      <View style={{height:65,flexDirection:'row',width:'75%',justifyContent:"center",alignItems:'center',alignSelf:"center"}}>
+      <View style={{height:80,flexDirection:'row',width:'75%',justifyContent:"center",alignItems:'center',alignSelf:"center"}}>
         {error?
         <>
         <MaterialIcons name="error" size={14} style={{alignSelf:'center',marginRight:3}} color='#ff7961'/>
-        <Text style={{color:'#ff7961',fontSize:responsiveFontSize(1.9)}}>
+        <Text style={{color:'#ff7961',fontSize:responsiveFontSize(1.9),fontFamily:'ProximaNova'}}>
           {error}
         </Text>
         </>
         :null}
       </View>
       <View style={{width:'75%',alignSelf:'center'}}>
-        <Button onPress={()=>setModal(true)} mode='contained' style={{backgroundColor:'#27255C',top:30,borderRadius:5,
+        {/* <Button onPress={()=>setModal(true)} mode='contained' style={{backgroundColor:'#27255C',top:30,borderRadius:5,
         marginBottom:20}}>
-            <Text style={{fontSize:responsiveFontSize(1.9),fontWeight:'400',color:'#F3F0EE'}}>Set up Profile picture</Text>
-        </Button>
-        <Button onPress={()=>formik.handleSubmit()} mode='contained' style={{backgroundColor:'#27255C',top:30,borderRadius:5}}>
-          <Text style={{fontSize:responsiveFontSize(1.9),fontWeight:'400',color:'#F3F0EE'}}>Register</Text>
-        </Button>
+            <Text style={{fontFamily:'ProximaNova',fontSize:responsiveFontSize(1.9),fontWeight:'400',color:'#F3F0EE'}}>Set up Profile picture</Text>
+        </Button> */}
+        {/* <Button onPress={()=>formik.handleSubmit()} mode='contained' style={{backgroundColor:'#27255C',top:30,borderRadius:5}}>
+          <Text style={{fontFamily:'ProximaNova',fontSize:responsiveFontSize(1.9),fontWeight:'400',color:'#F3F0EE'}}>Register</Text>
+        </Button> */}
+        <Pressable onPress={()=>setModal(true)} android_ripple={{color:'rgba(255, 255, 255, 0.1)'}} style={{justifyContent:'center',alignItems:'center',height:responsiveHeight(5),backgroundColor:'#27255C',borderRadius:5}}>
+                <Text style={{fontSize:responsiveFontSize(2),fontWeight:'400',color:'#F3F0EE',fontFamily:'ProximaNova'}}>Set Up Profile Picture</Text>
+        </Pressable>
+        <Pressable onPress={formik.handleSubmit} android_ripple={{color:'rgba(255, 255, 255, 0.1)'}} style={Platform.OS=='android'?{justifyContent:'center',alignItems:'center',height:responsiveHeight(5),backgroundColor:'#27255C',marginTop:20,borderRadius:5}:({pressed})=>pressed?{justifyContent:'center',alignItems:'center',height:responsiveHeight(5),backgroundColor:'#27255C',opacity:0.9,marginTop:20,borderRadius:5}:{justifyContent:'center',alignItems:'center',height:responsiveHeight(5),backgroundColor:'#27255C',marginTop:20,borderRadius:5}}>
+                {loading?<ActivityIndicator animating={true} size="small" />:<Text style={{fontSize:responsiveFontSize(2),fontWeight:'400',color:'#F3F0EE',fontFamily:'ProximaNova'}}>Register</Text>}
+        </Pressable>
         <View>
         </View>
       </View>

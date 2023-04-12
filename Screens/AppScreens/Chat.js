@@ -8,6 +8,8 @@ import { nanoid } from '@reduxjs/toolkit'
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { useSelector } from 'react-redux'
+import { useFonts } from 'expo-font'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 
 
@@ -18,7 +20,7 @@ const Chat = () => {
   const {userID}=useSelector((state)=>state.log)
   async function sendPrompt(prompt){
     try{
-        const response=await axios.post('http://192.168.0.189:4000/bot/botChat',{
+        const response=await axios.post('https://openai-backend-g0a1.onrender.com/bot/botChat',{
             prompt,
             userID
         })
@@ -29,7 +31,7 @@ const Chat = () => {
   }
   async function getChat(){
     try{
-        const response=await axios.post('http://192.168.0.189:4000/bot/getChat',{
+        const response=await axios.post('https://openai-backend-g0a1.onrender.com/bot/getChat',{
             userID
         })
         setMessages(response.data.chat.reverse())
@@ -51,7 +53,7 @@ const Chat = () => {
 }
 async function sendToCloud(messages){
     try{
-        await axios.post('http://192.168.0.189:4000/bot/chat',{
+        await axios.post('https://openai-backend-g0a1.onrender.com/bot/chat',{
             chat:messages,
             userID
         })
@@ -77,8 +79,8 @@ async function sendToCloud(messages){
         }
     const onResponse=useCallback(async(messages)=>{
         const response=await sendPrompt(messages[0].text)
-        setMessages(previousMessages=>GiftedChat.append(previousMessages,{_id:nanoid(),text:response,createdAt:new Date(),user:{_id:0,avatar: 'https://placeimg.com/140/140/any'}}))
-        sendToCloud([{_id:nanoid(),text:response,createdAt:new Date(),user:{_id:0,avatar: 'https://placeimg.com/140/140/any'}}]);
+        setMessages(previousMessages=>GiftedChat.append(previousMessages,{_id:nanoid(),text:response,createdAt:new Date(),user:{_id:0,avatar: 'https://i.pravatar.cc/150'}}))
+        sendToCloud([{_id:nanoid(),text:response,createdAt:new Date(),user:{_id:0,avatar: 'https://i.pravatar.cc/150'}}]);
         
     },[])
     const onSend = useCallback((messages) => {
@@ -102,6 +104,7 @@ async function sendToCloud(messages){
                 </InputToolbar>
             )
           }}
+          bottomOffset={useSafeAreaInsets().bottom}
           alwaysShowSend
           renderSend={SendButton}
           renderBubble={renderBubble}
@@ -109,6 +112,7 @@ async function sendToCloud(messages){
     </View>
   )
 }
+
 
 export default Chat
 
