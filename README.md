@@ -47,7 +47,7 @@ An application that uses openAI technology to generate images based on given pro
 ## Screenshots
 
 
-![s1](https://github.com/usmansalim3/openAI/assets/112751010/c2476d1a-9922-4f50-adc0-d1a33bc1781f)
+![s1](https://github.com/usmansalim3/openAI/assets/112751010/ac164994-68e0-4619-a84b-718ab8c134ed)
 ![s2](https://github.com/usmansalim3/openAI/assets/112751010/db3c3c5d-5600-4fe0-a089-cc23eed8b9ff)
 
 
