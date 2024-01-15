@@ -47,12 +47,8 @@ An application that uses openAI technology to generate images based on given pro
 ## Screenshots
 
 
-![WhatsApp Image 2023-04-03 at 4 08 49 PM](https://user-images.githubusercontent.com/112751010/231464695-c4f9e570-3419-4bc4-b38d-9ece55fa64a3.jpeg)
-![Screenshot_2023-04-12-19-14-50-066_host exp exponent](https://user-images.githubusercontent.com/112751010/231480096-4e63cb9f-8734-4b88-b060-5136f43b3337.jpg)
-![WhatsApp Image 2023-04-03 at 4 08 54 PM](https://user-images.githubusercontent.com/112751010/231464699-153e9845-1ad0-4482-a218-53c148465caf.jpeg)
-![WhatsApp Image 2023-04-03 at 4 09 01 PM](https://user-images.githubusercontent.com/112751010/231464708-5bf5203e-af22-48ef-a866-b346f49586be.jpeg)
-![WhatsApp Image 2023-04-03 at 4 09 13 PM](https://user-images.githubusercontent.com/112751010/231464712-40f34411-6590-4e86-9cc3-2ca51e302d3a.jpeg)
-
+![s1](https://github.com/usmansalim3/openAI/assets/112751010/c2476d1a-9922-4f50-adc0-d1a33bc1781f)
+![s2](https://github.com/usmansalim3/openAI/assets/112751010/db3c3c5d-5600-4fe0-a089-cc23eed8b9ff)
 
 
 
