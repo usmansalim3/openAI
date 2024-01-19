@@ -25,6 +25,7 @@ An application that uses openAI technology to generate images based on given pro
 **State Management:** ReduxToolkit
 
 **Server:** Node, Express, Twilio (sending txt to phone numbers)
+https://github.com/usmansalim3/Backend-using-ExpressJS
 
 
 ## Roadmap
