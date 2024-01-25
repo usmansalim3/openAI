@@ -49,8 +49,11 @@ function LoadingScreen(){
     )
 }
 function Tx({from,to,amount,hash,time,index,total}){
+    const navigation=useNavigation();
     function onPress(url){
-        Linking.openURL("https://goerli.etherscan.io/"+"tx/"+hash)
+        // Linking.openURL("https://goerli.etherscan.io/"+"tx/"+hash)
+        navigation.navigate("TransactionWebView",{uri:"https://goerli.etherscan.io/"+"tx/"+hash})
+        
     }
     return(
         <>
